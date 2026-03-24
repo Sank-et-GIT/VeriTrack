@@ -164,6 +164,12 @@ app.get("/verify", (req, res) => {
 });
 
 app.patch("/achievements/:id/approve", (req, res) => {
+  const role = req.headers.role;
+
+  if (role !== "admin") {
+    return res.status(403).json({ message: "Only admin can approve" });
+  }
+
   const id = Number(req.params.id);
   const achievement = achievements.find((a) => a.id === id);
 
@@ -175,7 +181,13 @@ app.patch("/achievements/:id/approve", (req, res) => {
   res.json(achievement);
 });
 
-app.patch("/achievements/:id/reject", (req, res) => {
+aapp.patch("/achievements/:id/reject", (req, res) => {
+  const role = req.headers.role;
+
+  if (role !== "admin") {
+    return res.status(403).json({ message: "Only admin can reject" });
+  }
+
   const id = Number(req.params.id);
   const achievement = achievements.find((a) => a.id === id);
 
