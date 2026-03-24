@@ -9,6 +9,31 @@ app.use(express.json());
 
 const achievements = [];
 
+function calculateScore(achievements) {
+  let score = 0;
+
+  achievements.forEach(a => {
+    switch (a.category.toLowerCase()) {
+      case "internship":
+        score += 30;
+        break;
+      case "hackathon":
+        score += 20;
+        break;
+      case "certification":
+        score += 10;
+        break;
+      case "sports":
+        score += 15;
+        break;
+      default:
+        score += 5;
+    }
+  });
+
+  return score;
+}
+
 app.get("/health", (req, res) => {
   res.json({ status: "OK", message: "VeriTrack backend running" });
 });
@@ -34,6 +59,21 @@ app.post("/achievements", (req, res) => {
 
 app.get("/achievements", (req, res) => {
   res.json(achievements);
+});
+
+app.get("/profile", (req, res) => {
+  const score = calculateScore(achievements);
+
+  res.json({
+    totalAchievements: achievements.length,
+    score: score,
+    message:
+      score > 80
+        ? "Excellent profile"
+        : score > 50
+        ? "Strong profile"
+        : "Needs improvement"
+  });
 });
 
 const PORT = process.env.PORT || 8080;
