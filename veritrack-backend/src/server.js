@@ -66,8 +66,13 @@ app.get("/achievements", (req, res) => {
 app.get("/profile", (req, res) => {
   const score = calculateScore(achievements);
 
+  const approvedCount = achievements.filter(
+    (a) => a.status === "approved"
+  ).length;
+
   res.json({
     totalAchievements: achievements.length,
+    approvedCount,
     score,
     message:
       score > 80
