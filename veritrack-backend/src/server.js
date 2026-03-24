@@ -3,7 +3,15 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+
 const achievements = [];
+
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", message: "VeriTrack backend running" });
+});
 
 app.post("/achievements", (req, res) => {
   const { title, category, description } = req.body;
@@ -26,13 +34,6 @@ app.post("/achievements", (req, res) => {
 
 app.get("/achievements", (req, res) => {
   res.json(achievements);
-});
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "VeriTrack backend running" });
 });
 
 const PORT = process.env.PORT || 8080;
