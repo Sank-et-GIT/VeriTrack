@@ -12,8 +12,10 @@ const achievements = [];
 function calculateScore(achievements) {
   let score = 0;
 
-  achievements.forEach(a => {
-    switch (a.category.toLowerCase()) {
+  achievements.forEach((a) => {
+    if ((a.status || "").toLowerCase() !== "approved") return;
+
+    switch ((a.category || "").toLowerCase()) {
       case "internship":
         score += 30;
         break;
@@ -66,7 +68,7 @@ app.get("/profile", (req, res) => {
 
   res.json({
     totalAchievements: achievements.length,
-    score: score,
+    score,
     message:
       score > 80
         ? "Excellent profile"
@@ -74,6 +76,30 @@ app.get("/profile", (req, res) => {
         ? "Strong profile"
         : "Needs improvement"
   });
+});
+
+app.patch("/achievements/:id/approve", (req, res) => {
+  const id = Number(req.params.id);
+  const achievement = achievements.find((a) => a.id === id);
+
+  if (!achievement) {
+    return res.status(404).json({ message: "Achievement not found" });
+  }
+
+  achievement.status = "approved";
+  res.json(achievement);
+});
+
+app.patch("/achievements/:id/reject", (req, res) => {
+  const id = Number(req.params.id);
+  const achievement = achievements.find((a) => a.id === id);
+
+  if (!achievement) {
+    return res.status(404).json({ message: "Achievement not found" });
+  }
+
+  achievement.status = "rejected";
+  res.json(achievement);
 });
 
 const PORT = process.env.PORT || 8080;
